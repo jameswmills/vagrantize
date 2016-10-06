@@ -14,7 +14,7 @@
 # to supply a password
 
 # Jenkins workspace or PWD
-WORKSPACE=${WORKSPACE:-"."}
+WORKSPACE=${WORKSPACE:-$PWD}
 
 # Path to the base qcow2 image you want to use
 baseimage=${baseimage:-''}
