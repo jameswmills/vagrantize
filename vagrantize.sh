@@ -39,9 +39,8 @@ vagrantsshid=${vagrantsshid:-"AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrt
 size_in_gb=${size_in_gb:-10}
 
 # Used for chown
-userid=${userid:-""}
-group=${group:-""}
-
+userid=${userid:-$(id -un)}
+group=${group:-$(id -gn)}
 
 # Test for undefined variables
 echo "Testing for undefined variables."
