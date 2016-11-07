@@ -27,6 +27,9 @@ The following variables need to be set in order for this script to function as e
 * size_in_gb - Image size in GB (defaults to 10).  The initial qcow will be resized to this value, and the meta-data will use it as well.
 * userid - Your username, used to chown the box (defaults to `$(id -un)`)
 * group - Your group, used to chown the box (defaults to `${id -gn)`)
+* vgname - The name of the VG that is extended *inside* the QCOW image (defaults to "atomicos")
+* disk_name - The disk *inside* the QCOW image (defaults to "vda")
+* disk_part - The number of the new parition added *inside* the QCOW image (defaults to "3")
 
 If any of these are undefined, the script will not run.
 
@@ -34,6 +37,7 @@ If any of these are undefined, the script will not run.
 
 * This script was built to create and load a vagrant box for the user running the script.  If you just want the box created for others, comment out the last two lines
 * It's a little crusty - There is some cleanup that could be done here
+* It is *very specific* to RHEL AH images - This is not a general purpose tool, and attempts to use this on non-RHEL-AH images might have very unexpected results!
 
 Read through the script before executing it.  This works without a hitch in my environment, but it is pretty invasive.  Better safe than sorry, right? ;)
 
@@ -58,6 +62,9 @@ The above command will have the following variables set:
 * size_in_gb=10
 * userid=jameswmills
 * group=jameswmills
+* vgname=atomicos
+* disk_name=vda
+* disk_part=3
 
 Upon completion, an "atomic-7.2.5" vagrant box should exist:
 

@@ -19,6 +19,18 @@ WORKSPACE=${WORKSPACE:-$PWD}
 # Path to the base qcow2 image you want to use
 baseimage=${baseimage:-''}
 
+# name of the disk that will have a new parition added to it
+
+disk_name=${disk_name:-'vda'}
+
+# partition number of the newly created disk
+
+disk_part=${disk_part:-'3'}
+
+# VG name
+
+vgname=${vgname:-'atomicos'}
+
 # This name will be used to define the temporary VM for provisioning,
 # as well as serve as the name of the finished vagrant box.
 name=${name:-"vagrantvbox"}
@@ -36,7 +48,7 @@ vagrantsshid=${vagrantsshid:-"AAAAB3NzaC1yc2EAAAABIwAAAQEA6NF8iallvQVp22WDkTkyrt
 
 # Image size in GB.  The initial qcow will be resized, and the
 # meta-data will use this
-size_in_gb=${size_in_gb:-10}
+size_in_gb=${size_in_gb:-30}
 
 # Used for chown
 userid=${userid:-$(id -un)}
@@ -101,7 +113,7 @@ write_files:
     permissions: 0644
     owner: root
     content: |
-      ROOT_SIZE=$((${size_in_gb}-5))G
+      ROOT_SIZE=5G
       SETUP_LVM_THIN_POOL=yes
 debug: True
 disable_root: False
@@ -122,6 +134,10 @@ runcmd:
   - for SERVICES in sshd; do systemctl enable \$SERVICES; done
   - for SERVICES in cloud-init cloud-config cloud-final cloud-init-local; do systemctl disable \$SERVICES; done
   - sed -i -e 's/\(.*requiretty$\)/#\1/' /etc/sudoers
+  - (echo n; echo p; echo; echo; echo; echo t; echo; echo 8e; echo w)|fdisk /dev/${disk_name}
+  - partx -u /dev/${disk_name}
+  - pvcreate /dev/${disk_name}${disk_part}
+  - vgextend ${vgname} /dev/${disk_name}${disk_part}
   - docker-storage-setup
   - xfs_growfs /dev/mapper/atomicos-root
 power_state:
