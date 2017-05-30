@@ -134,6 +134,7 @@ runcmd:
   - for SERVICES in sshd; do systemctl enable \$SERVICES; done
   - for SERVICES in cloud-init cloud-config cloud-final cloud-init-local; do systemctl disable \$SERVICES; done
   - sed -i -e 's/\(.*requiretty$\)/#\1/' /etc/sudoers
+  - sed -i -e 's/\(.*visiblepw$\)/#\1/' /etc/sudoers
   - (echo n; echo p; echo; echo; echo; echo t; echo; echo 8e; echo w)|fdisk /dev/${disk_name}
   - partx -u /dev/${disk_name}
   - pvcreate /dev/${disk_name}${disk_part}
