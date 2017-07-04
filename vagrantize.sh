@@ -140,7 +140,7 @@ runcmd:
   - pvcreate /dev/${disk_name}${disk_part}
   - vgextend ${vgname} /dev/${disk_name}${disk_part}
   - docker-storage-setup
-  - xfs_growfs /dev/mapper/atomicos-root
+  - lvextend -r -l +40%FREE /dev/atomicos/root
 power_state:
   mode: poweroff
   message: Bye Bye
