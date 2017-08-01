@@ -88,6 +88,12 @@ fi
 #Create some cloud-init ISO's
 
 ##cloud-init
+cat > network-config <<EOF
+version: 1
+config:
+  disabled
+EOF
+
 cat > meta-data << EOF
 instance-id: ${name}
 local-hostname: ${name}
@@ -148,14 +154,14 @@ EOF
 
 cat user-data
 
-genisoimage -output ${name}-cidata.iso -volid cidata -joliet -rock user-data meta-data
+genisoimage -output ${name}-cidata.iso -volid cidata -joliet -rock user-data meta-data network-config
 
 sudo virsh destroy ${name} || true
 sudo virsh undefine ${name} --remove-all-storage || true
 qemu-img resize ${baseimage} ${size_in_gb}GB
 sudo cp -f ${baseimage} ${storagedir}/${name}.qcow2
 sudo cp -f ${name}-cidata.iso ${storagedir}
-sudo virt-install --import --name ${name} --ram 2048 --vcpus 2 --disk ${storagedir}/${name}.qcow2,format=qcow2,bus=virtio \
+sudo virt-install --import --name ${name} --ram 4096 --vcpus 4 --disk ${storagedir}/${name}.qcow2,format=qcow2,bus=virtio \
    --disk ${storagedir}/${name}-cidata.iso,device=cdrom --os-type=linux --graphics spice \
    --noautoconsole --force
 
