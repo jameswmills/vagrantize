@@ -154,11 +154,11 @@ EOF
 
 cat user-data
 
-genisoimage -output ${name}-cidata.iso -volid cidata -joliet -rock user-data meta-data network-config
+mkisofs -output ${name}-cidata.iso -volid cidata -joliet -rock user-data meta-data network-config
 
 sudo virsh destroy ${name} || true
 sudo virsh undefine ${name} --remove-all-storage || true
-qemu-img resize ${baseimage} ${size_in_gb}GB
+qemu-img resize ${baseimage} ${size_in_gb}G
 sudo cp -f ${baseimage} ${storagedir}/${name}.qcow2
 sudo cp -f ${name}-cidata.iso ${storagedir}
 sudo virt-install --import --name ${name} --ram 4096 --vcpus 4 --disk ${storagedir}/${name}.qcow2,format=qcow2,bus=virtio \
